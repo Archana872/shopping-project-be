@@ -1,15 +1,30 @@
-using Microsoft.AspNetCore.Mvc;
+using WebApplication1.DataModel;
+using WebApplication1.RepositryLayer;
 
-namespace WebApplication1.BusinessLogic
+namespace WebApplication1.BusinessLogic;
+
+public interface ISHAppLogic
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class SHAppLogic 
+    Task<IReadOnlyList<DummyItem>> GetDummyItemsAsync();
+    int Add(int a, int b);
+}
+
+public class SHAppLogic : ISHAppLogic
+{
+    private readonly ISHAppRepositry _repository;
+
+    public SHAppLogic(ISHAppRepositry repository)
     {
-        public int SUM Add(int a , int b)
-        {
-            int sum = a + b;
-            return sum;
-        }
+        _repository = repository;
+    }
+
+    public Task<IReadOnlyList<DummyItem>> GetDummyItemsAsync()
+    {
+        return _repository.GetDummyItemsAsync();
+    }
+
+    public int Add(int a, int b)
+    {
+        return _repository.Add(a, b);
     }
 }
