@@ -1,26 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
+using WebApplication1.BusinessLogic;
+using WebApplication1.DataModel;
 
 namespace WebApplication1.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class SHAppController : ControllerBase
     {
-        private static readonly string[] Summaries =
-        [
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        ];
-
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        private readonly SHAppLogic _shAppLogic;
+        public SHAppController(SHAppLogic shAppLogic)
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            _shAppLogic = shAppLogic;
+        }
+        [HttpGet(Name = "SumMethod")]
+        public int Get(int a, int b)
+        {
+            int sum = _shAppLogic.Add(a, b);
+            Console.WriteLine($"The sum of {a} and {b} is: {sum}");
+            return sum;
         }
     }
 }
