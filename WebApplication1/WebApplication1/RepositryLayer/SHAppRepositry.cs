@@ -2,13 +2,7 @@ using WebApplication1.DataModel;
 
 namespace WebApplication1.RepositryLayer;
 
-public interface ISHAppRepositry
-{
-    Task<IReadOnlyList<DummyItem>> GetDummyItemsAsync();
-    int Add(int a, int b);
-}
-
-public class SHAppRepositry : ISHAppRepositry
+public class SHAppRepositry
 {
     public Task<IReadOnlyList<DummyItem>> GetDummyItemsAsync()
     {

@@ -5,12 +5,12 @@ using WebApplication1.DataModel;
 namespace WebApplication1.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class SHAppController : ControllerBase
 {
-    private readonly ISHAppLogic _shAppLogic;
+    private readonly SHAppLogic _shAppLogic;
 
-    public SHAppController(ISHAppLogic shAppLogic)
+    public SHAppController(SHAppLogic shAppLogic)
     {
         _shAppLogic = shAppLogic;
     }
@@ -22,10 +22,17 @@ public class SHAppController : ControllerBase
         return Ok(items);
     }
 
-    [HttpGet(Name = "SumMethod")]
-    public ActionResult<int> Get(int a, int b)
+    [HttpGet("sum")]
+    public ActionResult<int> GetSum(int a, int b)
     {
         int sum = _shAppLogic.Add(a, b);
+        return Ok(sum);
+    }
+
+    [HttpGet("multiple")]
+    public ActionResult<int> Getmultiple(int a, int b)
+    {
+        int sum = _shAppLogic.multiple(a, b);
         return Ok(sum);
     }
 }

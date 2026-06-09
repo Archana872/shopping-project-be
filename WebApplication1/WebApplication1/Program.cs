@@ -7,8 +7,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ISHAppRepositry, SHAppRepositry>();
-builder.Services.AddScoped<ISHAppLogic, SHAppLogic>();
+builder.Services.AddScoped<SHAppRepositry>();
+builder.Services.AddScoped<SHAppLogic>();
 
 var app = builder.Build();
 

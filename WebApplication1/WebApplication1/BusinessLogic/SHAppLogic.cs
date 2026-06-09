@@ -3,17 +3,11 @@ using WebApplication1.RepositryLayer;
 
 namespace WebApplication1.BusinessLogic;
 
-public interface ISHAppLogic
+public class SHAppLogic
 {
-    Task<IReadOnlyList<DummyItem>> GetDummyItemsAsync();
-    int Add(int a, int b);
-}
+    private readonly SHAppRepositry _repository;
 
-public class SHAppLogic : ISHAppLogic
-{
-    private readonly ISHAppRepositry _repository;
-
-    public SHAppLogic(ISHAppRepositry repository)
+    public SHAppLogic(SHAppRepositry repository)
     {
         _repository = repository;
     }
@@ -26,5 +20,9 @@ public class SHAppLogic : ISHAppLogic
     public int Add(int a, int b)
     {
         return _repository.Add(a, b);
+    }
+    public int multiple(int a, int b)
+    {
+        return a * b;
     }
 }
