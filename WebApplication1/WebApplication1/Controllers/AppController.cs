@@ -40,4 +40,17 @@ public class AppController : ControllerBase
 
         return Ok(user);
     }
+
+    [HttpPost("CreateOrder")]
+    public ActionResult<UserResponse> CreateOrder(CreateUserRequest request)
+    {
+        var user = _userService.CreateUser(request);
+
+        if (user is null)
+        {
+            return Conflict("User already exists.");
+        }
+
+        return Ok(user);
+    }
 }

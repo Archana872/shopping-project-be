@@ -6,3 +6,10 @@ public class CreateUserRequest
     public string Password { get; set; } = string.Empty;
     public UserRole Role { get; set; }
 }
+
+public class CreateOrderRequest
+{
+    public string item { get; set; }
+    public int unitprice { get; set; }
+    public int qty { get; set; }
+}

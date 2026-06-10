@@ -5,5 +5,6 @@ public enum UserRole
     User,
     Packer,
     Driver,
-    Admin
+    Admin,
+    Customer
 }
