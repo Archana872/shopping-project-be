@@ -42,13 +42,4 @@ public class UserService
 
         return new UserResponse { Name = user.Name, Role = user.Role };
     }
-
-    public UserResponse? CreateOrder(CreateOrderRequest request)
-    {
-        int totalprice = request.unitprice * request.qty;
-
-        _repository.CreateOrder(user);
-
-        
-    }
 }

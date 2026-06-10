@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApplication1.BusinessLogic;
 using WebApplication1.DataModel;
+using WebApplication1.RepositryLayer;
 
 namespace WebApplication1.Controllers;
 
@@ -9,10 +10,12 @@ namespace WebApplication1.Controllers;
 public class AppController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly ItemRepository _itemRepository;
 
-    public AppController(UserService userService)
+    public AppController(UserService userService, ItemRepository itemRepository)
     {
         _userService = userService;
+        _itemRepository = itemRepository;
     }
 
     [HttpPost("users")]
@@ -52,5 +55,18 @@ public class AppController : ControllerBase
         }
 
         return Ok(user);
+    }
+
+    [HttpPost("Additems")]
+    public IActionResult AddItem(AddItemRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.ItemName) || string.IsNullOrWhiteSpace(request.Measurement))
+        {
+            return BadRequest("ItemName and Measurement are required.");
+        }
+
+        _itemRepository.AddItem(request);
+
+        return Ok(new { message = "Item added successfully" });
     }
 }
