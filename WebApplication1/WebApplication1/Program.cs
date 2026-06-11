@@ -10,6 +10,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<ItemRepository>();
+builder.Services.AddScoped<ProductRepository>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<OrderRepository>();
+builder.Services.AddScoped<OrderService>();
 
 var app = builder.Build();
 

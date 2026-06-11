@@ -13,15 +13,16 @@ public class ItemRepository
             ?? throw new InvalidOperationException("DBConnectionString is not configured.");
     }
 
-    public void AddItem(AddItemRequest item)
+    public void AddItem(ItemRequest item)
     {
-        const string sql = "INSERT INTO AddItem (ItemName, Quantity, Measurement) VALUES (@ItemName, @Quantity, @Measurement)";
+        const string sql = "INSERT INTO Item (ItemName, Quantity, Measurement,Price) VALUES (@ItemName, @Quantity, @Measurement, @Price)";
 
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(sql, connection);
         command.Parameters.AddWithValue("@ItemName", item.ItemName);
         command.Parameters.AddWithValue("@Quantity", item.Quantity);
         command.Parameters.AddWithValue("@Measurement", item.Measurement);
+        command.Parameters.AddWithValue("@Price", item.Price);
 
         connection.Open();
         command.ExecuteNonQuery();

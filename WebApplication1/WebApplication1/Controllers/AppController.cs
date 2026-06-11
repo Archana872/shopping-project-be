@@ -57,8 +57,8 @@ public class AppController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost("Additems")]
-    public IActionResult AddItem(AddItemRequest request)
+    [HttpPost("items")]
+    public IActionResult AddItem(ItemRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.ItemName) || string.IsNullOrWhiteSpace(request.Measurement))
         {
