@@ -69,4 +69,24 @@ public class AppController : ControllerBase
 
         return Ok(new { message = "Item added successfully" });
     }
+    [HttpGet("items")]
+    public IActionResult GetItems()
+    {
+        var items = _itemRepository.GetItems();
+
+        return Ok(items);
+    }
+    [HttpGet("items/{id}")]
+    public IActionResult GetItemById(int id)
+    {
+        var item = _itemRepository.GetItemById(id);
+
+        if (item == null)
+        {
+            return NotFound(new { message = "Item not found." });
+        }
+
+        return Ok(item);
+    }
+
 }
