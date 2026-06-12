@@ -56,30 +56,30 @@ public class AppController : ControllerBase
 
         return Ok(user);
     }
-
-    [HttpPost("items")]
+    [HttpPost("Insertitems")]
     public IActionResult AddItem(ItemRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.ItemName) || string.IsNullOrWhiteSpace(request.Measurement))
-        {
-            return BadRequest("ItemName and Measurement are required.");
-        }
-
         _itemRepository.AddItem(request);
-
         return Ok(new { message = "Item added successfully" });
     }
-    [HttpGet("items")]
+
+    [HttpGet("Getitems")]
     public IActionResult GetItems()
     {
         var items = _itemRepository.GetItems();
 
+        if (items == null || !items.Any())
+        {
+            return NotFound(new { message = "No items found." });
+        }
+
         return Ok(items);
     }
-    [HttpGet("items/{id}")]
-    public IActionResult GetItemById(int id)
+    
+    [HttpGet("items/{itemName}")]
+    public IActionResult GetItemByName(string itemName)
     {
-        var item = _itemRepository.GetItemById(id);
+        var item = _itemRepository.GetItemByName(itemName);
 
         if (item == null)
         {
@@ -88,5 +88,4 @@ public class AppController : ControllerBase
 
         return Ok(item);
     }
-
 }

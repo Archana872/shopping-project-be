@@ -13,23 +13,9 @@ public class ItemRepository
             ?? throw new InvalidOperationException("DBConnectionString is not configured.");
     }
 
-    public void AddItem(ItemRequest item)
+    public List<ItemResponse> GetItems()
     {
-        const string sql = "INSERT INTO Item (ItemName, Quantity, Measurement,Price) VALUES (@ItemName, @Quantity, @Measurement, @Price)";
-
-        using var connection = new SqlConnection(_connectionString);
-        using var command = new SqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@ItemName", item.ItemName);
-        command.Parameters.AddWithValue("@Quantity", item.Quantity);
-        command.Parameters.AddWithValue("@Measurement", item.Measurement);
-        command.Parameters.AddWithValue("@Price", item.Price);
-
-        connection.Open();
-        command.ExecuteNonQuery();
-    }
-    public List<ItemRequest> GetItems()
-    {
-        var items = new List<ItemRequest>();
+        var items = new List<ItemResponse>();
 
         const string sql =
             "SELECT ItemName, Quantity, Measurement, Price FROM Item";
@@ -43,26 +29,27 @@ public class ItemRepository
 
         while (reader.Read())
         {
-            items.Add(new ItemRequest
+            items.Add(new ItemResponse
             {
-                ItemName = reader["ItemName"].ToString() ?? string.Empty,
+                ItemName = reader["ItemName"]?.ToString() ?? string.Empty,
                 Quantity = Convert.ToDecimal(reader["Quantity"]),
-                Measurement = reader["Measurement"].ToString() ?? string.Empty,
+                Measurement = reader["Measurement"]?.ToString() ?? string.Empty,
                 Price = Convert.ToDecimal(reader["Price"])
             });
         }
 
         return items;
     }
-    public ItemResponse? GetItemById(int id)
+
+    public ItemResponse? GetItemByName(string itemName)
     {
         const string sql =
-            "SELECT Id, ItemName, Quantity, Measurement, Price FROM Item WHERE Id = @Id";
+            "SELECT ItemName, Quantity, Measurement, Price FROM Item WHERE ItemName = @ItemName";
 
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(sql, connection);
 
-        command.Parameters.AddWithValue("@Id", id);
+        command.Parameters.AddWithValue("@ItemName", itemName);
 
         connection.Open();
 
@@ -72,14 +59,29 @@ public class ItemRepository
         {
             return new ItemResponse
             {
-                Id = Convert.ToInt32(reader["Id"]),
-                ItemName = reader["ItemName"].ToString() ?? string.Empty,
+                ItemName = reader["ItemName"]?.ToString() ?? string.Empty,
                 Quantity = Convert.ToDecimal(reader["Quantity"]),
-                Measurement = reader["Measurement"].ToString() ?? string.Empty,
+                Measurement = reader["Measurement"]?.ToString() ?? string.Empty,
                 Price = Convert.ToDecimal(reader["Price"])
             };
         }
 
         return null;
+    }
+    public void AddItem(ItemRequest item)
+    {
+        const string sql =
+            "INSERT INTO Item (ItemName, Quantity, Measurement, Price) VALUES (@ItemName, @Quantity, @Measurement, @Price)";
+
+        using var connection = new SqlConnection(_connectionString);
+        using var command = new SqlCommand(sql, connection);
+
+        command.Parameters.AddWithValue("@ItemName", item.ItemName);
+        command.Parameters.AddWithValue("@Quantity", item.Quantity);
+        command.Parameters.AddWithValue("@Measurement", item.Measurement);
+        command.Parameters.AddWithValue("@Price", item.Price);
+
+        connection.Open();
+        command.ExecuteNonQuery();
     }
 }
