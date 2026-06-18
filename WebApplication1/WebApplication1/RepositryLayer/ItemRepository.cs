@@ -84,4 +84,71 @@ public class ItemRepository
         connection.Open();
         command.ExecuteNonQuery();
     }
+    public void Item(ItemRequest item)
+    {
+        const string sql = @"
+        INSERT INTO Item
+        (ItemName, Quantity, Measurement, Price)
+        VALUES
+        (@ItemName, @Quantity, @Measurement, @Price)";
+
+        using var connection = new SqlConnection(_connectionString);
+        using var command = new SqlCommand(sql, connection);
+
+        command.Parameters.AddWithValue("@ItemName", item.ItemName);
+        command.Parameters.AddWithValue("@Quantity", item.Quantity);
+        command.Parameters.AddWithValue("@Measurement", item.Measurement);
+        command.Parameters.AddWithValue("@Price", item.Price);
+
+        connection.Open();
+        command.ExecuteNonQuery();
+    }
+
+public List<StockResponse> GetStockItems()
+{
+    var items = new List<StockResponse>();
+
+    const string sql = @"
+        SELECT StockId, ItemName, AvailableQuantity, Measurement, Price
+        FROM Stock";
+
+    using var connection = new SqlConnection(_connectionString);
+    using var command = new SqlCommand(sql, connection);
+
+    connection.Open();
+
+    using var reader = command.ExecuteReader();
+
+    while (reader.Read())
+    {
+        items.Add(new StockResponse
+        {
+            StockId = Convert.ToInt32(reader["StockId"]),
+            ItemName = reader["ItemName"].ToString() ?? "",
+            AvailableQuantity = Convert.ToDecimal(reader["AvailableQuantity"]),
+            Measurement = reader["Measurement"].ToString() ?? "",
+            Price = Convert.ToDecimal(reader["Price"])
+        });
+    }
+
+    return items;
+}
+  
+    public int UpdateStock(string itemName, decimal quantity)
+    {
+        const string sql = @"
+        UPDATE Stock
+        SET AvailableQuantity = @Quantity
+        WHERE ItemName = @ItemName";
+
+        using var connection = new SqlConnection(_connectionString);
+        using var command = new SqlCommand(sql, connection);
+
+        command.Parameters.AddWithValue("@ItemName", itemName);
+        command.Parameters.AddWithValue("@Quantity", quantity);
+
+        connection.Open();
+
+        return command.ExecuteNonQuery();
+    }
 }

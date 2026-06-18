@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using WebApplication1.BusinessLogic;
 using WebApplication1.DataModel;
 using WebApplication1.RepositryLayer;
@@ -11,11 +12,16 @@ public class AppController : ControllerBase
 {
     private readonly UserService _userService;
     private readonly ItemRepository _itemRepository;
+    private readonly IConfiguration _configuration;
 
-    public AppController(UserService userService, ItemRepository itemRepository)
+    public AppController(
+        UserService userService,
+        ItemRepository itemRepository,
+        IConfiguration configuration)
     {
         _userService = userService;
         _itemRepository = itemRepository;
+        _configuration = configuration;
     }
 
     [HttpPost("users")]
@@ -44,48 +50,64 @@ public class AppController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost("CreateOrder")]
-    public ActionResult<UserResponse> CreateOrder(CreateUserRequest request)
-    {
-        var user = _userService.CreateUser(request);
-
-        if (user is null)
-        {
-            return Conflict("User already exists.");
-        }
-
-        return Ok(user);
-    }
     [HttpPost("Insertitems")]
-    public IActionResult AddItem(ItemRequest request)
+    public IActionResult InsertItem(ItemRequest request)
     {
-        _itemRepository.AddItem(request);
-        return Ok(new { message = "Item added successfully" });
+        _itemRepository.Item(request);
+
+        return Ok(new
+        {
+            Message = "Item added successfully"
+        });
     }
 
     [HttpGet("Getitems")]
     public IActionResult GetItems()
     {
         var items = _itemRepository.GetItems();
-
-        if (items == null || !items.Any())
-        {
-            return NotFound(new { message = "No items found." });
-        }
-
         return Ok(items);
     }
-    
-    [HttpGet("items/{itemName}")]
+
+    [HttpGet("Getitems/{itemName}")]
     public IActionResult GetItemByName(string itemName)
     {
         var item = _itemRepository.GetItemByName(itemName);
 
         if (item == null)
         {
-            return NotFound(new { message = "Item not found." });
+            return NotFound("Item not found");
         }
 
         return Ok(item);
+    }
+    [HttpGet("testdb")]
+    public IActionResult TestDb()
+    {
+        try
+        {
+            using var connection = new SqlConnection(_configuration.GetConnectionString("DBConnectionString"));
+            connection.Open();
+            return Ok("Database Connected");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpGet("stock")]
+    public IActionResult GetStock()
+    {
+        var stockItems = _itemRepository.GetStockItems();
+
+        return Ok(stockItems);
+    }
+    [HttpPut("updatestock")]
+    public IActionResult UpdateStock(UpdateStockRequest request)
+    {
+        int rows = _itemRepository.UpdateStock(
+            request.ItemName,
+            request.AvailableQuantity);
+
+        return Ok($"Rows Updated: {rows}");
     }
 }
