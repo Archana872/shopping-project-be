@@ -18,7 +18,7 @@ public class ItemRepository
         var items = new List<ItemResponse>();
 
         const string sql =
-            "SELECT ItemName, Quantity, Measurement, Price FROM Item";
+            "SELECT StockName, Quantity, Measurement, Price FROM Item";
 
         using var connection = new SqlConnection(_connectionString);
         using var command = new SqlCommand(sql, connection);
@@ -31,7 +31,7 @@ public class ItemRepository
         {
             items.Add(new ItemResponse
             {
-                ItemName = reader["ItemName"]?.ToString() ?? string.Empty,
+                ItemName = reader["StockName"]?.ToString() ?? string.Empty,
                 Quantity = Convert.ToDecimal(reader["Quantity"]),
                 Measurement = reader["Measurement"]?.ToString() ?? string.Empty,
                 Price = Convert.ToDecimal(reader["Price"])
