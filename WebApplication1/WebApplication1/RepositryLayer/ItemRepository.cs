@@ -109,7 +109,7 @@ public List<StockResponse> GetStockItems()
     var items = new List<StockResponse>();
 
     const string sql = @"
-        SELECT StockId, ItemName, AvailableQuantity, Measurement, Price
+        SELECT StockId, StockName, AvailableQuantity, Measurement, Price
         FROM Stock";
 
     using var connection = new SqlConnection(_connectionString);
@@ -124,7 +124,7 @@ public List<StockResponse> GetStockItems()
         items.Add(new StockResponse
         {
             StockId = Convert.ToInt32(reader["StockId"]),
-            ItemName = reader["ItemName"].ToString() ?? "",
+            ItemName = reader["StockName"].ToString() ?? "",
             AvailableQuantity = Convert.ToDecimal(reader["AvailableQuantity"]),
             Measurement = reader["Measurement"].ToString() ?? "",
             Price = Convert.ToDecimal(reader["Price"])
